@@ -1,1 +1,1937 @@
-{"openapi":"3.1.0","info":{"title":"Super SDR","description":"Backend APIs for Super SDR","version":"1.1.0"},"paths":{"/api/auth/signup":{"post":{"tags":["Authentication"],"summary":"Signup","description":"Register a new user. No token is issued at signup. User must login separately.","operationId":"signup_api_auth_signup_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserCreate"}}},"required":true},"responses":{"201":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/auth/login":{"post":{"tags":["Authentication"],"summary":"Login","description":"Authenticate user credentials and issue a JWT token upon successful login.","operationId":"login_api_auth_login_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LoginRequest"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Token"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/auth/me":{"get":{"tags":["Authentication"],"summary":"Read Current User","description":"Retrieve the currently authenticated user's profile.","operationId":"read_current_user_api_auth_me_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserBase"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/businesses":{"get":{"tags":["Businesses"],"summary":"List Businesses","description":"List all businesses.","operationId":"list_businesses_api_businesses_get","security":[{"HTTPBearer":[]}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Business"},"title":"Response List Businesses Api Businesses Get"}}}}}},"post":{"tags":["Businesses"],"summary":"Create Business","description":"Create a new business.","operationId":"create_business_api_businesses_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-User-ID","in":"header","required":true,"schema":{"type":"string","title":"X-User-Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/BusinessBase"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Business"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/businesses/verify":{"get":{"tags":["Businesses"],"summary":"Verify Business Association","description":"Verify if logged in user has an associated business record.\nReturns the business details if found, otherwise returns None.","operationId":"verify_business_association_api_businesses_verify_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-User-ID","in":"header","required":true,"schema":{"type":"string","title":"X-User-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/businesses/{business_id}":{"get":{"tags":["Businesses"],"summary":"Get Business","description":"Get a business by ID.","operationId":"get_business_api_businesses__business_id__get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"business_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Business Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Business"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["Businesses"],"summary":"Delete Business","description":"Delete a business.","operationId":"delete_business_api_businesses__business_id__delete","security":[{"HTTPBearer":[]}],"parameters":[{"name":"business_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Business Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads":{"get":{"tags":["Leads"],"summary":"List Leads","operationId":"list_leads_api_leads_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Lead"},"title":"Response List Leads Api Leads Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["Leads"],"summary":"Create Lead","operationId":"create_lead_api_leads_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadCreate"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Lead"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads/upload-csv":{"post":{"tags":["Leads"],"summary":"Create Leads Csv","operationId":"create_leads_csv_api_leads_upload_csv_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_create_leads_csv_api_leads_upload_csv_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Lead"},"title":"Response Create Leads Csv Api Leads Upload Csv Post"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads/{lead_id}/lead":{"get":{"tags":["Leads"],"summary":"Get Lead","operationId":"get_lead_api_leads__lead_id__lead_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"lead_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Lead Id"}},{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Lead"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads/not-contacted":{"get":{"tags":["Leads"],"summary":"Get Not Contacted Leads","operationId":"get_not_contacted_leads_api_leads_not_contacted_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Lead"},"title":"Response Get Not Contacted Leads Api Leads Not Contacted Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads/{lead_id}":{"put":{"tags":["Leads"],"summary":"Update Lead","operationId":"update_lead_api_leads__lead_id__put","security":[{"HTTPBearer":[]}],"parameters":[{"name":"lead_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Lead Id"}},{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadUpdate"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["Leads"],"summary":"Delete Lead","operationId":"delete_lead_api_leads__lead_id__delete","security":[{"HTTPBearer":[]}],"parameters":[{"name":"lead_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Lead Id"}},{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads/queue":{"post":{"tags":["Leads"],"summary":"Queue Leads","operationId":"queue_leads_api_leads_queue_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"array","items":{"type":"string","format":"uuid"},"title":"Lead Ids"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/leads/unqueue":{"post":{"tags":["Leads"],"summary":"Unqueue Leads","operationId":"unqueue_leads_api_leads_unqueue_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"type":"array","items":{"type":"string","format":"uuid"},"title":"Lead Ids"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls/outbound/{lead_id}":{"post":{"tags":["Calls"],"summary":"Make Outbound Call","description":"Make an outbound call","operationId":"make_outbound_call_api_calls_outbound__lead_id__post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"lead_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Lead Id"}},{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls/outbound-batch/":{"post":{"tags":["Calls"],"summary":"Start Calling Job","operationId":"start_calling_job_api_calls_outbound_batch__post","parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls":{"get":{"tags":["Calls"],"summary":"List Calls","description":"List all calls for a business.","operationId":"list_calls_api_calls_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/CallRecord"},"title":"Response List Calls Api Calls Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls/{call_id}":{"get":{"tags":["Calls"],"summary":"Get Call","description":"Get a call by ID.","operationId":"get_call_api_calls__call_id__get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"call_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Call Id"}},{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CallRecord"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"patch":{"tags":["Calls"],"summary":"Update Call Status","description":"Update the status of a call.","operationId":"update_call_status_api_calls__call_id__patch","security":[{"HTTPBearer":[]}],"parameters":[{"name":"call_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Call Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/Body_update_call_status_api_calls__call_id__patch"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["Calls"],"summary":"Delete Call","description":"Delete a call by ID.","operationId":"delete_call_api_calls__call_id__delete","security":[{"HTTPBearer":[]}],"parameters":[{"name":"call_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Call Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls/{call_id}/recording":{"get":{"tags":["Calls"],"summary":"Get Call Recording","description":"Get the recording of a call.","operationId":"get_call_recording_api_calls__call_id__recording_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"call_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Call Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls/{call_id}/transcript":{"get":{"tags":["Calls"],"summary":"Get Call Transcript","description":"Get the transcript of a call.","operationId":"get_call_transcript_api_calls__call_id__transcript_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"call_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Call Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/calls/webhook/call-status":{"post":{"tags":["Calls"],"summary":"Handle Call Status Webhook","description":"Handle call status webhooks from Twilio.","operationId":"handle_call_status_webhook_api_calls_webhook_call_status_post","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}},"/api/agents":{"get":{"tags":["Agents"],"summary":"List Agents","operationId":"list_agents_api_agents_get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/AgentResponse"},"title":"Response List Agents Api Agents Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["Agents"],"summary":"Create Agent","operationId":"create_agent_api_agents_post","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_create_agent_api_agents_post"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AgentResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/agents/use-agent":{"put":{"tags":["Agents"],"summary":"Use Agent","description":"Update a business and activate the agent.","operationId":"use_agent_api_agents_use_agent_put","security":[{"HTTPBearer":[]}],"parameters":[{"name":"X-Business-ID","in":"header","required":true,"schema":{"type":"string","title":"X-Business-Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AgentUseRequest"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Business"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/agents/{agent_id}":{"get":{"tags":["Agents"],"summary":"Get Agent","operationId":"get_agent_api_agents__agent_id__get","security":[{"HTTPBearer":[]}],"parameters":[{"name":"agent_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Agent Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AgentResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"put":{"tags":["Agents"],"summary":"Update Agent","operationId":"update_agent_api_agents__agent_id__put","security":[{"HTTPBearer":[]}],"parameters":[{"name":"agent_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Agent Id"}}],"requestBody":{"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_update_agent_api_agents__agent_id__put"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/AgentResponse"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"delete":{"tags":["Agents"],"summary":"Delete Agent","operationId":"delete_agent_api_agents__agent_id__delete","security":[{"HTTPBearer":[]}],"parameters":[{"name":"agent_id","in":"path","required":true,"schema":{"type":"string","format":"uuid","title":"Agent Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/webhooks/outbound/call-info":{"post":{"tags":["Ultravox Webhooks"],"summary":"Receive Webhook","operationId":"receive_webhook_api_webhooks_outbound_call_info_post","parameters":[{"name":"x-api-key","in":"header","required":false,"schema":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"X-Api-Key"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/webhooks/outplay_analysis_webhook":{"post":{"tags":["Ultravox Webhooks"],"summary":"Receive Webhook","operationId":"receive_webhook_api_webhooks_outplay_analysis_webhook_post","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}},"/auth/google":{"get":{"tags":["Google OAuth"],"summary":"Get Google Auth Url Response","operationId":"get_google_auth_url_response_auth_google_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/auth/google/callback":{"get":{"tags":["Google OAuth"],"summary":"Google Auth Callback","operationId":"google_auth_callback_auth_google_callback_get","parameters":[{"name":"code","in":"query","required":false,"schema":{"type":"string","title":"Code"}},{"name":"state","in":"query","required":false,"schema":{"type":"string","title":"State"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/calendar/create-event":{"post":{"tags":["Google Calendar"],"summary":"Create Google Event","operationId":"create_google_event_calendar_create_event_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/EventCreateRequest"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/test/test-outplay":{"post":{"tags":["Test APIs"],"summary":"Test Outplay Api","description":"Test the Outplay API integration by sending call data.","operationId":"test_outplay_api_test_test_outplay_post","requestBody":{"content":{"application/json":{"schema":{"type":"object","title":"Call Data"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/":{"get":{"tags":["Root"],"summary":"Root","description":"Root and health check endpoint.","operationId":"root__get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}}},"components":{"schemas":{"AgentResponse":{"properties":{"agent_id":{"type":"string","format":"uuid","title":"Agent Id"},"business_id":{"type":"string","format":"uuid","title":"Business Id"},"voice_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Voice Type"},"direction":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Direction"},"business_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Business Name"},"caller_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Caller Name"},"pain_points":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Pain Points"},"value_proposition":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Value Proposition"},"additional_details":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Additional Details"},"text":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Text"},"url":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Url"},"pdf":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Pdf"},"summary":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Summary"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"updated_at":{"anyOf":[{"type":"string","format":"date-time"},{"type":"null"}],"title":"Updated At"},"is_active":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Active"}},"type":"object","required":["agent_id","business_id","voice_type","direction","business_name","caller_name","pain_points","value_proposition","additional_details","text","url","pdf","summary","created_at","updated_at","is_active"],"title":"AgentResponse"},"AgentUseRequest":{"properties":{"agent_id":{"type":"string","format":"uuid","title":"Agent Id"},"is_active":{"type":"boolean","title":"Is Active"}},"type":"object","required":["agent_id","is_active"],"title":"AgentUseRequest"},"Body_create_agent_api_agents_post":{"properties":{"voice_type":{"type":"string","title":"Voice Type"},"direction":{"type":"string","title":"Direction"},"business_name":{"type":"string","title":"Business Name"},"caller_name":{"type":"string","title":"Caller Name"},"pain_points":{"type":"string","title":"Pain Points"},"value_proposition":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Value Proposition"},"additional_details":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Additional Details"},"text":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Text"},"url":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Url"},"pdf":{"anyOf":[{"type":"string","format":"binary"},{"type":"null"}],"title":"Pdf"}},"type":"object","required":["business_name","caller_name"],"title":"Body_create_agent_api_agents_post"},"Body_create_leads_csv_api_leads_upload_csv_post":{"properties":{"file":{"type":"string","format":"binary","title":"File"}},"type":"object","required":["file"],"title":"Body_create_leads_csv_api_leads_upload_csv_post"},"Body_update_agent_api_agents__agent_id__put":{"properties":{"voice_type":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Voice Type"},"direction":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Direction"},"business_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Business Name"},"caller_name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Caller Name"},"pain_points":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Pain Points"},"value_proposition":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Value Proposition"},"additional_details":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Additional Details"},"text":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Text"},"url":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Url"},"pdf":{"anyOf":[{"type":"string","format":"binary"},{"type":"null"}],"title":"Pdf"}},"type":"object","title":"Body_update_agent_api_agents__agent_id__put"},"Body_update_call_status_api_calls__call_id__patch":{"properties":{"status":{"$ref":"#/components/schemas/CallStatus"}},"type":"object","required":["status"],"title":"Body_update_call_status_api_calls__call_id__patch"},"Business":{"properties":{"business_name":{"type":"string","title":"Business Name"},"caller_name":{"type":"string","title":"Caller Name"},"description":{"type":"string","title":"Description"},"phone_number":{"type":"string","title":"Phone Number"},"direction":{"type":"string","title":"Direction"},"business_id":{"type":"string","format":"uuid","title":"Business Id"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"updated_at":{"type":"string","format":"date-time","title":"Updated At"},"active":{"type":"boolean","title":"Active","default":true},"config":{"$ref":"#/components/schemas/BusinessConfig"}},"type":"object","required":["business_name","caller_name","description","phone_number","direction"],"title":"Business"},"BusinessBase":{"properties":{"business_name":{"type":"string","title":"Business Name"},"caller_name":{"type":"string","title":"Caller Name"},"description":{"type":"string","title":"Description"},"phone_number":{"type":"string","title":"Phone Number"},"direction":{"type":"string","title":"Direction"}},"type":"object","required":["business_name","caller_name","description","phone_number","direction"],"title":"BusinessBase"},"BusinessConfig":{"properties":{"voice":{"type":"string","title":"Voice"},"temperature":{"type":"number","title":"Temperature"},"first_speaker":{"type":"string","title":"First Speaker"},"greeting_prompt":{"type":"string","title":"Greeting Prompt"},"custom_settings":{"anyOf":[{"additionalProperties":{"anyOf":[{"type":"string"},{"type":"null"}]},"type":"object"},{"type":"null"}],"title":"Custom Settings"}},"type":"object","required":["voice","temperature","first_speaker","greeting_prompt"],"title":"BusinessConfig"},"CallDirection":{"type":"string","enum":["inbound","outbound"],"title":"CallDirection"},"CallRecord":{"properties":{"ultravox_call_id":{"type":"string","format":"uuid","title":"Ultravox Call Id"},"lead_id":{"type":"string","format":"uuid","title":"Lead Id"},"business_id":{"type":"string","format":"uuid","title":"Business Id"},"call_sid":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Call Sid"},"direction":{"$ref":"#/components/schemas/CallDirection"},"from_number":{"type":"string","title":"From Number"},"to_number":{"type":"string","title":"To Number"},"status":{"$ref":"#/components/schemas/CallStatus","default":"Initiated"},"duration":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Duration"},"start_time":{"anyOf":[{"type":"string","format":"date-time"},{"type":"null"}],"title":"Start Time"},"end_time":{"anyOf":[{"type":"string","format":"date-time"},{"type":"null"}],"title":"End Time"},"recording_url":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Recording Url"},"metadata":{"type":"object","title":"Metadata","default":{}},"created_at":{"type":"string","format":"date-time","title":"Created At"},"updated_at":{"type":"string","format":"date-time","title":"Updated At"}},"type":"object","required":["direction","from_number","to_number"],"title":"CallRecord"},"CallStatus":{"type":"string","enum":["Not Initiated","Initiated","In Progress","Completed","Failed"],"title":"CallStatus"},"EventCreateRequest":{"properties":{"summary":{"type":"string","title":"Summary"},"description":{"type":"string","title":"Description"},"start_time":{"type":"string","format":"date-time","title":"Start Time"},"end_time":{"type":"string","format":"date-time","title":"End Time"},"timezone":{"type":"string","title":"Timezone"},"attendees":{"items":{"type":"string"},"type":"array","title":"Attendees","default":[]}},"type":"object","required":["summary","description","start_time","end_time","timezone"],"title":"EventCreateRequest"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"Lead":{"properties":{"lead_id":{"type":"string","format":"uuid","title":"Lead Id"},"business_id":{"type":"string","format":"uuid","title":"Business Id"},"name":{"type":"string","title":"Name"},"email":{"type":"string","title":"Email"},"phone_number":{"type":"string","title":"Phone Number"},"source":{"$ref":"#/components/schemas/LeadSource"},"source_link":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Source Link"},"created_at":{"type":"string","format":"date-time","title":"Created At"},"timezone":{"type":"string","title":"Timezone"},"lead_status":{"$ref":"#/components/schemas/LeadStatus","default":"Not Contacted"},"call_status":{"$ref":"#/components/schemas/CallStatus","default":"Not Initiated"},"updated_at":{"type":"string","format":"date-time","title":"Updated At"},"is_deleted":{"type":"boolean","title":"Is Deleted","default":false},"is_queued":{"type":"boolean","title":"Is Queued","default":false}},"type":"object","required":["name","email","phone_number","source","timezone"],"title":"Lead"},"LeadCreate":{"properties":{"name":{"type":"string","title":"Name"},"email":{"type":"string","format":"email","title":"Email"},"phone_number":{"type":"string","title":"Phone Number"},"timezone":{"type":"string","title":"Timezone"}},"type":"object","required":["name","email","phone_number","timezone"],"title":"LeadCreate"},"LeadSource":{"type":"string","enum":["Manual Entry","CSV Import"],"title":"LeadSource"},"LeadStatus":{"type":"string","enum":["Not Contacted","Contacted","Contact Failed"],"title":"LeadStatus"},"LeadUpdate":{"properties":{"name":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Name"},"email":{"anyOf":[{"type":"string","format":"email"},{"type":"null"}],"title":"Email"},"phone_number":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Phone Number"},"source":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Source"},"source_link":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Source Link"},"timezone":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Timezone"},"lead_status":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Lead Status"},"call_status":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Call Status"},"created_at":{"anyOf":[{"type":"string","format":"date-time"},{"type":"null"}],"title":"Created At"},"updated_at":{"anyOf":[{"type":"string","format":"date-time"},{"type":"null"}],"title":"Updated At"},"is_deleted":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Deleted"},"is_queued":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Queued"}},"type":"object","title":"LeadUpdate"},"LoginRequest":{"properties":{"email":{"anyOf":[{"type":"string","format":"email"},{"type":"null"}],"title":"Email"},"username":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Username"},"password":{"type":"string","title":"Password"}},"type":"object","required":["password"],"title":"LoginRequest"},"Token":{"properties":{"access_token":{"type":"string","title":"Access Token"},"token_type":{"type":"string","title":"Token Type"}},"type":"object","required":["access_token","token_type"],"title":"Token"},"UserBase":{"properties":{"email":{"type":"string","format":"email","title":"Email"},"name":{"type":"string","title":"Name"}},"type":"object","required":["email","name"],"title":"UserBase"},"UserCreate":{"properties":{"email":{"type":"string","format":"email","title":"Email"},"name":{"type":"string","title":"Name"},"password":{"type":"string","title":"Password"}},"type":"object","required":["email","name","password"],"title":"UserCreate"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"}},"securitySchemes":{"OAuth2PasswordBearer":{"type":"oauth2","flows":{"password":{"scopes":{},"tokenUrl":"/login"}}},"HTTPBearer":{"type":"http","scheme":"bearer"}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Super SDR",
+    "description": "Backend APIs for Super SDR",
+    "version": "1.1.0"
+  },
+  "paths": {
+    "/api/auth/signup": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Signup",
+        "description": "Register a new user. No token is issued at signup. User must login separately.",
+        "operationId": "signup_api_auth_signup_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserCreate" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Login",
+        "description": "Authenticate user credentials and issue a JWT token upon successful login.",
+        "operationId": "login_api_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Token" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": ["Authentication"],
+        "summary": "Read Current User",
+        "description": "Retrieve the currently authenticated user's profile.",
+        "operationId": "read_current_user_api_auth_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserBase" }
+              }
+            }
+          }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      }
+    },
+    "/api/businesses": {
+      "get": {
+        "tags": ["Businesses"],
+        "summary": "List Businesses",
+        "description": "List all businesses.",
+        "operationId": "list_businesses_api_businesses_get",
+        "security": [{ "HTTPBearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Business" },
+                  "title": "Response List Businesses Api Businesses Get"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Businesses"],
+        "summary": "Create Business",
+        "description": "Create a new business.",
+        "operationId": "create_business_api_businesses_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-User-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/BusinessBase" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Business" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/businesses/verify": {
+      "get": {
+        "tags": ["Businesses"],
+        "summary": "Verify Business Association",
+        "description": "Verify if logged in user has an associated business record.\nReturns the business details if found, otherwise returns None.",
+        "operationId": "verify_business_association_api_businesses_verify_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-User-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/businesses/{business_id}": {
+      "get": {
+        "tags": ["Businesses"],
+        "summary": "Get Business",
+        "description": "Get a business by ID.",
+        "operationId": "get_business_api_businesses__business_id__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Business Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Business" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Businesses"],
+        "summary": "Delete Business",
+        "description": "Delete a business.",
+        "operationId": "delete_business_api_businesses__business_id__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "business_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Business Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads": {
+      "get": {
+        "tags": ["Leads"],
+        "summary": "List Leads",
+        "operationId": "list_leads_api_leads_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Lead" },
+                  "title": "Response List Leads Api Leads Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Leads"],
+        "summary": "Create Lead",
+        "operationId": "create_lead_api_leads_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LeadCreate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Lead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/upload-csv": {
+      "post": {
+        "tags": ["Leads"],
+        "summary": "Create Leads Csv",
+        "operationId": "create_leads_csv_api_leads_upload_csv_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_leads_csv_api_leads_upload_csv_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Lead" },
+                  "title": "Response Create Leads Csv Api Leads Upload Csv Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{lead_id}/lead": {
+      "get": {
+        "tags": ["Leads"],
+        "summary": "Get Lead",
+        "operationId": "get_lead_api_leads__lead_id__lead_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "lead_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Lead Id" }
+          },
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Lead" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/not-contacted": {
+      "get": {
+        "tags": ["Leads"],
+        "summary": "Get Not Contacted Leads",
+        "operationId": "get_not_contacted_leads_api_leads_not_contacted_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/Lead" },
+                  "title": "Response Get Not Contacted Leads Api Leads Not Contacted Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{lead_id}": {
+      "put": {
+        "tags": ["Leads"],
+        "summary": "Update Lead",
+        "operationId": "update_lead_api_leads__lead_id__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "lead_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Lead Id" }
+          },
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LeadUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Leads"],
+        "summary": "Delete Lead",
+        "operationId": "delete_lead_api_leads__lead_id__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "lead_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Lead Id" }
+          },
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/queue": {
+      "post": {
+        "tags": ["Leads"],
+        "summary": "Queue Leads",
+        "operationId": "queue_leads_api_leads_queue_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "type": "string", "format": "uuid" },
+                "title": "Lead Ids"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/unqueue": {
+      "post": {
+        "tags": ["Leads"],
+        "summary": "Unqueue Leads",
+        "operationId": "unqueue_leads_api_leads_unqueue_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": { "type": "string", "format": "uuid" },
+                "title": "Lead Ids"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls/outbound/{lead_id}": {
+      "post": {
+        "tags": ["Calls"],
+        "summary": "Make Outbound Call",
+        "description": "Make an outbound call",
+        "operationId": "make_outbound_call_api_calls_outbound__lead_id__post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "lead_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Lead Id" }
+          },
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls/outbound-batch/": {
+      "post": {
+        "tags": ["Calls"],
+        "summary": "Start Calling Job",
+        "operationId": "start_calling_job_api_calls_outbound_batch__post",
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls": {
+      "get": {
+        "tags": ["Calls"],
+        "summary": "List Calls",
+        "description": "List all calls for a business.",
+        "operationId": "list_calls_api_calls_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/CallRecord" },
+                  "title": "Response List Calls Api Calls Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls/{call_id}": {
+      "get": {
+        "tags": ["Calls"],
+        "summary": "Get Call",
+        "description": "Get a call by ID.",
+        "operationId": "get_call_api_calls__call_id__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Call Id" }
+          },
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CallRecord" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["Calls"],
+        "summary": "Update Call Status",
+        "description": "Update the status of a call.",
+        "operationId": "update_call_status_api_calls__call_id__patch",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Call Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_update_call_status_api_calls__call_id__patch"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Calls"],
+        "summary": "Delete Call",
+        "description": "Delete a call by ID.",
+        "operationId": "delete_call_api_calls__call_id__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Call Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls/{call_id}/recording": {
+      "get": {
+        "tags": ["Calls"],
+        "summary": "Get Call Recording",
+        "description": "Get the recording of a call.",
+        "operationId": "get_call_recording_api_calls__call_id__recording_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Call Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls/{call_id}/transcript": {
+      "get": {
+        "tags": ["Calls"],
+        "summary": "Get Call Transcript",
+        "description": "Get the transcript of a call.",
+        "operationId": "get_call_transcript_api_calls__call_id__transcript_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "call_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid", "title": "Call Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calls/webhook/call-status": {
+      "post": {
+        "tags": ["Calls"],
+        "summary": "Handle Call Status Webhook",
+        "description": "Handle call status webhooks from Twilio.",
+        "operationId": "handle_call_status_webhook_api_calls_webhook_call_status_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/api/agents": {
+      "get": {
+        "tags": ["Agents"],
+        "summary": "List Agents",
+        "operationId": "list_agents_api_agents_get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/AgentResponse" },
+                  "title": "Response List Agents Api Agents Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Agents"],
+        "summary": "Create Agent",
+        "operationId": "create_agent_api_agents_post",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_create_agent_api_agents_post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/use-agent": {
+      "put": {
+        "tags": ["Agents"],
+        "summary": "Use Agent",
+        "description": "Update a business and activate the agent.",
+        "operationId": "use_agent_api_agents_use_agent_put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "X-Business-ID",
+            "in": "header",
+            "required": true,
+            "schema": { "type": "string", "title": "X-Business-Id" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgentUseRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Business" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/{agent_id}": {
+      "get": {
+        "tags": ["Agents"],
+        "summary": "Get Agent",
+        "operationId": "get_agent_api_agents__agent_id__get",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Agents"],
+        "summary": "Update Agent",
+        "operationId": "update_agent_api_agents__agent_id__put",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_update_agent_api_agents__agent_id__put"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgentResponse" }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Agents"],
+        "summary": "Delete Agent",
+        "operationId": "delete_agent_api_agents__agent_id__delete",
+        "security": [{ "HTTPBearer": [] }],
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/webhooks/outbound/call-info": {
+      "post": {
+        "tags": ["Ultravox Webhooks"],
+        "summary": "Receive Webhook",
+        "operationId": "receive_webhook_api_webhooks_outbound_call_info_post",
+        "parameters": [
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [{ "type": "string" }, { "type": "null" }],
+              "title": "X-Api-Key"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/webhooks/outplay_analysis_webhook": {
+      "post": {
+        "tags": ["Ultravox Webhooks"],
+        "summary": "Receive Webhook",
+        "operationId": "receive_webhook_api_webhooks_outplay_analysis_webhook_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    },
+    "/auth/google": {
+      "get": {
+        "tags": ["Google OAuth"],
+        "summary": "Get Google Auth Url Response",
+        "operationId": "get_google_auth_url_response_auth_google_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      }
+    },
+    "/auth/google/callback": {
+      "get": {
+        "tags": ["Google OAuth"],
+        "summary": "Google Auth Callback",
+        "operationId": "google_auth_callback_auth_google_callback_get",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "title": "Code" }
+          },
+          {
+            "name": "state",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "title": "State" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/calendar/create-event": {
+      "post": {
+        "tags": ["Google Calendar"],
+        "summary": "Create Google Event",
+        "operationId": "create_google_event_calendar_create_event_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/EventCreateRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        },
+        "security": [{ "OAuth2PasswordBearer": [] }]
+      }
+    },
+    "/test/test-outplay": {
+      "post": {
+        "tags": ["Test APIs"],
+        "summary": "Test Outplay Api",
+        "description": "Test the Outplay API integration by sending call data.",
+        "operationId": "test_outplay_api_test_test_outplay_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "title": "Call Data" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["Root"],
+        "summary": "Root",
+        "description": "Root and health check endpoint.",
+        "operationId": "root__get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": { "application/json": { "schema": {} } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentResponse": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Agent Id"
+          },
+          "business_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Business Id"
+          },
+          "voice_type": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Voice Type"
+          },
+          "direction": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Direction"
+          },
+          "business_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Business Name"
+          },
+          "caller_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Caller Name"
+          },
+          "pain_points": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Pain Points"
+          },
+          "value_proposition": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Value Proposition"
+          },
+          "additional_details": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Additional Details"
+          },
+          "text": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Text"
+          },
+          "url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Url"
+          },
+          "pdf": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Pdf"
+          },
+          "summary": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Summary"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Updated At"
+          },
+          "is_active": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "business_id",
+          "voice_type",
+          "direction",
+          "business_name",
+          "caller_name",
+          "pain_points",
+          "value_proposition",
+          "additional_details",
+          "text",
+          "url",
+          "pdf",
+          "summary",
+          "created_at",
+          "updated_at",
+          "is_active"
+        ],
+        "title": "AgentResponse"
+      },
+      "AgentUseRequest": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Agent Id"
+          },
+          "is_active": { "type": "boolean", "title": "Is Active" }
+        },
+        "type": "object",
+        "required": ["agent_id", "is_active"],
+        "title": "AgentUseRequest"
+      },
+      "Body_create_agent_api_agents_post": {
+        "properties": {
+          "voice_type": { "type": "string", "title": "Voice Type" },
+          "direction": { "type": "string", "title": "Direction" },
+          "business_name": { "type": "string", "title": "Business Name" },
+          "caller_name": { "type": "string", "title": "Caller Name" },
+          "pain_points": { "type": "string", "title": "Pain Points" },
+          "value_proposition": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Value Proposition"
+          },
+          "additional_details": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Additional Details"
+          },
+          "text": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Text"
+          },
+          "url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Url"
+          },
+          "pdf": {
+            "anyOf": [
+              { "type": "string", "format": "binary" },
+              { "type": "null" }
+            ],
+            "title": "Pdf"
+          }
+        },
+        "type": "object",
+        "required": ["business_name", "caller_name"],
+        "title": "Body_create_agent_api_agents_post"
+      },
+      "Body_create_leads_csv_api_leads_upload_csv_post": {
+        "properties": {
+          "file": { "type": "string", "format": "binary", "title": "File" }
+        },
+        "type": "object",
+        "required": ["file"],
+        "title": "Body_create_leads_csv_api_leads_upload_csv_post"
+      },
+      "Body_update_agent_api_agents__agent_id__put": {
+        "properties": {
+          "voice_type": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Voice Type"
+          },
+          "direction": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Direction"
+          },
+          "business_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Business Name"
+          },
+          "caller_name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Caller Name"
+          },
+          "pain_points": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Pain Points"
+          },
+          "value_proposition": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Value Proposition"
+          },
+          "additional_details": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Additional Details"
+          },
+          "text": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Text"
+          },
+          "url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Url"
+          },
+          "pdf": {
+            "anyOf": [
+              { "type": "string", "format": "binary" },
+              { "type": "null" }
+            ],
+            "title": "Pdf"
+          }
+        },
+        "type": "object",
+        "title": "Body_update_agent_api_agents__agent_id__put"
+      },
+      "Body_update_call_status_api_calls__call_id__patch": {
+        "properties": {
+          "status": { "$ref": "#/components/schemas/CallStatus" }
+        },
+        "type": "object",
+        "required": ["status"],
+        "title": "Body_update_call_status_api_calls__call_id__patch"
+      },
+      "Business": {
+        "properties": {
+          "business_name": { "type": "string", "title": "Business Name" },
+          "caller_name": { "type": "string", "title": "Caller Name" },
+          "description": { "type": "string", "title": "Description" },
+          "phone_number": { "type": "string", "title": "Phone Number" },
+          "direction": { "type": "string", "title": "Direction" },
+          "business_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Business Id"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "active": { "type": "boolean", "title": "Active", "default": true },
+          "config": { "$ref": "#/components/schemas/BusinessConfig" }
+        },
+        "type": "object",
+        "required": [
+          "business_name",
+          "caller_name",
+          "description",
+          "phone_number",
+          "direction"
+        ],
+        "title": "Business"
+      },
+      "BusinessBase": {
+        "properties": {
+          "business_name": { "type": "string", "title": "Business Name" },
+          "caller_name": { "type": "string", "title": "Caller Name" },
+          "description": { "type": "string", "title": "Description" },
+          "phone_number": { "type": "string", "title": "Phone Number" },
+          "direction": { "type": "string", "title": "Direction" }
+        },
+        "type": "object",
+        "required": [
+          "business_name",
+          "caller_name",
+          "description",
+          "phone_number",
+          "direction"
+        ],
+        "title": "BusinessBase"
+      },
+      "BusinessConfig": {
+        "properties": {
+          "voice": { "type": "string", "title": "Voice" },
+          "temperature": { "type": "number", "title": "Temperature" },
+          "first_speaker": { "type": "string", "title": "First Speaker" },
+          "greeting_prompt": { "type": "string", "title": "Greeting Prompt" },
+          "custom_settings": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "anyOf": [{ "type": "string" }, { "type": "null" }]
+                },
+                "type": "object"
+              },
+              { "type": "null" }
+            ],
+            "title": "Custom Settings"
+          }
+        },
+        "type": "object",
+        "required": [
+          "voice",
+          "temperature",
+          "first_speaker",
+          "greeting_prompt"
+        ],
+        "title": "BusinessConfig"
+      },
+      "CallDirection": {
+        "type": "string",
+        "enum": ["inbound", "outbound"],
+        "title": "CallDirection"
+      },
+      "CallRecord": {
+        "properties": {
+          "ultravox_call_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Ultravox Call Id"
+          },
+          "lead_id": { "type": "string", "format": "uuid", "title": "Lead Id" },
+          "business_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Business Id"
+          },
+          "call_sid": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Call Sid"
+          },
+          "direction": { "$ref": "#/components/schemas/CallDirection" },
+          "from_number": { "type": "string", "title": "From Number" },
+          "to_number": { "type": "string", "title": "To Number" },
+          "status": {
+            "$ref": "#/components/schemas/CallStatus",
+            "default": "Initiated"
+          },
+          "duration": {
+            "anyOf": [{ "type": "integer" }, { "type": "null" }],
+            "title": "Duration"
+          },
+          "start_time": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Start Time"
+          },
+          "end_time": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "End Time"
+          },
+          "recording_url": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Recording Url"
+          },
+          "metadata": { "type": "object", "title": "Metadata", "default": {} },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": ["direction", "from_number", "to_number"],
+        "title": "CallRecord"
+      },
+      "CallStatus": {
+        "type": "string",
+        "enum": [
+          "Not Initiated",
+          "Initiated",
+          "In Progress",
+          "Completed",
+          "Failed"
+        ],
+        "title": "CallStatus"
+      },
+      "EventCreateRequest": {
+        "properties": {
+          "summary": { "type": "string", "title": "Summary" },
+          "description": { "type": "string", "title": "Description" },
+          "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Start Time"
+          },
+          "end_time": {
+            "type": "string",
+            "format": "date-time",
+            "title": "End Time"
+          },
+          "timezone": { "type": "string", "title": "Timezone" },
+          "attendees": {
+            "items": { "type": "string" },
+            "type": "array",
+            "title": "Attendees",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "summary",
+          "description",
+          "start_time",
+          "end_time",
+          "timezone"
+        ],
+        "title": "EventCreateRequest"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": { "$ref": "#/components/schemas/ValidationError" },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Lead": {
+        "properties": {
+          "lead_id": { "type": "string", "format": "uuid", "title": "Lead Id" },
+          "business_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Business Id"
+          },
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "title": "Email" },
+          "phone_number": { "type": "string", "title": "Phone Number" },
+          "source": { "$ref": "#/components/schemas/LeadSource" },
+          "source_link": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Source Link"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "timezone": { "type": "string", "title": "Timezone" },
+          "lead_status": {
+            "$ref": "#/components/schemas/LeadStatus",
+            "default": "Not Contacted"
+          },
+          "call_status": {
+            "$ref": "#/components/schemas/CallStatus",
+            "default": "Not Initiated"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "title": "Is Deleted",
+            "default": false
+          },
+          "is_queued": {
+            "type": "boolean",
+            "title": "Is Queued",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": ["name", "email", "phone_number", "source", "timezone"],
+        "title": "Lead"
+      },
+      "LeadCreate": {
+        "properties": {
+          "name": { "type": "string", "title": "Name" },
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "phone_number": { "type": "string", "title": "Phone Number" },
+          "timezone": { "type": "string", "title": "Timezone" }
+        },
+        "type": "object",
+        "required": ["name", "email", "phone_number", "timezone"],
+        "title": "LeadCreate"
+      },
+      "LeadSource": {
+        "type": "string",
+        "enum": ["Manual Entry", "CSV Import"],
+        "title": "LeadSource"
+      },
+      "LeadStatus": {
+        "type": "string",
+        "enum": ["Not Contacted", "Contacted", "Contact Failed"],
+        "title": "LeadStatus"
+      },
+      "LeadUpdate": {
+        "properties": {
+          "name": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Name"
+          },
+          "email": {
+            "anyOf": [
+              { "type": "string", "format": "email" },
+              { "type": "null" }
+            ],
+            "title": "Email"
+          },
+          "phone_number": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Phone Number"
+          },
+          "source": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Source"
+          },
+          "source_link": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Source Link"
+          },
+          "timezone": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Timezone"
+          },
+          "lead_status": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Lead Status"
+          },
+          "call_status": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Call Status"
+          },
+          "created_at": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Created At"
+          },
+          "updated_at": {
+            "anyOf": [
+              { "type": "string", "format": "date-time" },
+              { "type": "null" }
+            ],
+            "title": "Updated At"
+          },
+          "is_deleted": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Deleted"
+          },
+          "is_queued": {
+            "anyOf": [{ "type": "boolean" }, { "type": "null" }],
+            "title": "Is Queued"
+          }
+        },
+        "type": "object",
+        "title": "LeadUpdate"
+      },
+      "LoginRequest": {
+        "properties": {
+          "email": {
+            "anyOf": [
+              { "type": "string", "format": "email" },
+              { "type": "null" }
+            ],
+            "title": "Email"
+          },
+          "username": {
+            "anyOf": [{ "type": "string" }, { "type": "null" }],
+            "title": "Username"
+          },
+          "password": { "type": "string", "title": "Password" }
+        },
+        "type": "object",
+        "required": ["password"],
+        "title": "LoginRequest"
+      },
+      "Token": {
+        "properties": {
+          "access_token": { "type": "string", "title": "Access Token" },
+          "token_type": { "type": "string", "title": "Token Type" }
+        },
+        "type": "object",
+        "required": ["access_token", "token_type"],
+        "title": "Token"
+      },
+      "UserBase": {
+        "properties": {
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "name": { "type": "string", "title": "Name" }
+        },
+        "type": "object",
+        "required": ["email", "name"],
+        "title": "UserBase"
+      },
+      "UserCreate": {
+        "properties": {
+          "email": { "type": "string", "format": "email", "title": "Email" },
+          "name": { "type": "string", "title": "Name" },
+          "password": { "type": "string", "title": "Password" }
+        },
+        "type": "object",
+        "required": ["email", "name", "password"],
+        "title": "UserCreate"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": { "anyOf": [{ "type": "string" }, { "type": "integer" }] },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": { "type": "string", "title": "Message" },
+          "type": { "type": "string", "title": "Error Type" }
+        },
+        "type": "object",
+        "required": ["loc", "msg", "type"],
+        "title": "ValidationError"
+      }
+    },
+    "securitySchemes": {
+      "OAuth2PasswordBearer": {
+        "type": "oauth2",
+        "flows": { "password": { "scopes": {}, "tokenUrl": "/login" } }
+      },
+      "HTTPBearer": { "type": "http", "scheme": "bearer" }
+    }
+  }
+}
