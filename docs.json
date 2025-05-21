@@ -12,14 +12,7 @@
     "tabs": [
       {
         "tab": "API Reference",
-        "groups": [
-          {
-            "group": "API Documentation",
-            "pages": [
-              "api-reference/introduction"
-            ]
-          }
-        ]
+        "openapi": "api-reference/openapi.json"
       }
     ]
   },
@@ -27,7 +20,6 @@
     "light": "/logo/favicon.svg",
     "dark": "/logo/favicon.svg"
   },
-
   "footer": {
     "socials": {
       "x": "https://x.com/intellisequence",
